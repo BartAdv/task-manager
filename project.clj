@@ -3,7 +3,9 @@
   :url "http://example.com/FIXME"
   :dependencies [[org.clojure/clojure "1.4.0"]
                  [ring/ring-jetty-adapter "1.2.0-beta2"]
-                 [compojure "1.1.5"]]
+                 [compojure "1.1.5"]
+                 [hiccup "1.0.3"]
+                 [com.datomic/datomic-free "0.8.3889"]]
   :plugins [[lein-ring "0.8.2"]]
   :ring {:handler task-manager.handler/app}
   :profiles

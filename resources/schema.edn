@@ -1,0 +1,13 @@
+;; tasks
+[{:db/doc "Task number"
+  :db/ident :task/number
+  :db/valueType :db.type/long
+  :db/cardinality :db.cardinality/one
+  :db/id #db/id [:db.part/db]
+  :db.install/_attribute :db.part/db}
+ {:db/doc "Task description"
+  :db/ident :task/description
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/id #db/id [:db.part/db]
+  :db.install/_attribute :db.part/db}]

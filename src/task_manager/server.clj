@@ -1,11 +1,12 @@
 (ns task-manager.server
   (:use compojure.core
-        [ring.adapter.jetty :only (run-jetty)])
+        [ring.adapter.jetty :only (run-jetty)]
+        [task-manager.tasks :reload true])
   (:require [compojure.handler :as handler]
             [compojure.route :as route]))
 
 (defroutes app-routes
-  (GET "/" [] "Hello World")
+  (GET "/" [] (index))
   (route/resources "/")
   (route/not-found "Not Found"))
 

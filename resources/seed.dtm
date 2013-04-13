@@ -1,0 +1,2 @@
+[{:db/id #db/id [:db.part/user] :task/number 1 :task/description "Seeded task 1"}
+ {:db/id #db/id [:db.part/user] :task/number 2 :task/description "Seeded task 2"}]
