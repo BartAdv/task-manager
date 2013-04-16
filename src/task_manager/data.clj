@@ -13,13 +13,12 @@
 (d/transact conn seed-tx)
 
 (defn tasks []
-  (let [results (q '[:find ?e :where [?e :task/number]] (dbval))]
-    (->>
-      (map (fn [eid]
-             (let [ent (d/entity (dbval) (first eid))]
-               (d/touch ent)))
-           results)
-      (sort-by :task/number))))
+  (->>
+   (q '[:find ?e :where [?e :task/number]] (dbval))
+   (map (fn [eid]
+          (let [ent (d/entity (dbval) (first eid))]
+            (d/touch ent))))
+   (sort-by :task/number)))
 
 (defn task! [num desc]
   (let [tx [{:db/id #db/id [:db.part/user]
