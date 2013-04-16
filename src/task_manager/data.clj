@@ -2,17 +2,15 @@
   (:use [datomic.api :only [q db] :as d]))
 
 (def uri "datomic:mem://tasks")
+(d/create-database uri)
+(def conn (d/connect uri))
 (defn dbval [] (db conn))
 
-(defn install []
-  (let [schema-tx (read-string (slurp "resources/schema.edn"))]
-    (d/create-database uri)
-    (d/transact conn schema-tx)))
+(def schema-tx (read-string (slurp "resources/schema.edn")))
+(d/transact conn schema-tx)
 
-(defn seed []
-  (let [data-tx (read-string (slurp "resources/seed.dtm"))]
-    (d/transact (d/connect uri) data-tx)))
-
+(def seed-tx (read-string (slurp "resources/seed.dtm")))
+(d/transact conn seed-tx)
 
 (defn tasks []
   (let [results (q '[:find ?e :where [?e :task/number]] (dbval))]
@@ -20,3 +18,9 @@
            (let [ent (d/entity (dbval) (first eid))]
              (d/touch ent)))
          results)))
+
+(defn task! [num desc]
+  (let [tx [{:db/id #db/id [:db.part/user]
+                 :task/description desc
+                 :task/number num}]]
+    (d/transact conn tx)))

@@ -3,6 +3,7 @@
   :url "http://example.com/FIXME"
   :dependencies [[org.clojure/clojure "1.4.0"]
                  [ring/ring-jetty-adapter "1.2.0-beta2"]
+                 [ring/ring-json "0.2.0"]
                  [compojure "1.1.5"]
                  [hiccup "1.0.3"]
                  [com.datomic/datomic-free "0.8.3889"]]
