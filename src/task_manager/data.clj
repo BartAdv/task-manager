@@ -21,6 +21,9 @@
 
 (defn task! [num desc]
   (let [tx [{:db/id #db/id [:db.part/user]
-                 :task/description desc
-                 :task/number num}]]
+             :task/description desc
+             :task/number num}]]
     (d/transact conn tx)))
+
+(defn create-task! [desc]
+  (d/transact conn [[:create-task desc]]))

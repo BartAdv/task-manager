@@ -6,7 +6,10 @@
    (doctype :html5)
    [:html
     [:head (:title fields)]
-    [:body body]]))
+    [:body
+     (include-js "js/angular.js")
+     (include-js "js/app.js")
+     body]]))
 
 (defn task [{n :task/number desc :task/description}]
   [:div
@@ -15,4 +18,6 @@
 
 (defn index [tasks]
   (master {:title "Yeah"}
-           [:ul "Tasks" (map (fn [t] [:li (task t)]) tasks)]))
+          [:div {:ng-controller "TaskCtrl"}
+            [:script ""]
+            [:ul "Tasks" (map (fn [t] [:li (task t)]) tasks)]]))

@@ -10,8 +10,9 @@
   (GET "/" [] (index))
   (GET "/bututak" [] "Bu-tu-tak!!!")
   (POST "/task" {{num :number desc :description} :body}
-        (save-task num desc))
-  (POST "/test" {body :body} (println body))
+        (save-task! num desc))
+  (PUT "/task/:desc" [desc]
+       (create-task! desc))
   (route/resources "/")
   (route/not-found "Not Found"))
 
