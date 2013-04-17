@@ -18,7 +18,8 @@
 
 (def app
   (-> app-routes
-      (wrap-json-body {:keywords? true})))
+      (wrap-json-body {:keywords? true})
+      (wrap-json-response)))
 
 (defn run [options]
   (let [options (merge {:port 8080 :join? false} options)]

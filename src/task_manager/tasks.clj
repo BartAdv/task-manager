@@ -7,6 +7,9 @@
   (let [tasks (data/tasks)]
     (views/index tasks)))
 
+(defn with-json-keys [{n :task/number desc :task/description}]
+  (hash-map :number n :description desc))
+
 (defn save-task! [num desc]
   (do
     (data/task! num desc)
@@ -15,4 +18,4 @@
 (defn create-task! [desc]
   (do
     (data/create-task! desc)
-    (views/index (data/tasks))))
+    (map with-json-keys (data/tasks))))
