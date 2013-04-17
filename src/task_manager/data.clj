@@ -1,15 +1,16 @@
 (ns task-manager.data
-  (:use [datomic.api :only [q db] :as d]))
+  (:use [datomic.api :only [q db] :as d])
+  (:require clojure.java.io))
 
 (def uri "datomic:mem://tasks")
 (d/create-database uri)
 (def conn (d/connect uri))
 (defn dbval [] (db conn))
 
-(def schema-tx (read-string (slurp "resources/schema.edn")))
+(def schema-tx (read-string (slurp (clojure.java.io/resource "schema.edn"))))
 (d/transact conn schema-tx)
 
-(def seed-tx (read-string (slurp "resources/seed.dtm")))
+(def seed-tx (read-string (slurp (clojure.java.io/resource "seed.dtm"))))
 (d/transact conn seed-tx)
 
 (defn tasks []

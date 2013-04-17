@@ -4,7 +4,8 @@
         [task-manager.tasks :reload true])
   (:require [compojure.handler :as handler]
             [compojure.route :as route]
-            [ring.middleware.json :refer (wrap-json-body wrap-json-response)]))
+            [ring.middleware.json :refer (wrap-json-body wrap-json-response)])
+  (:gen-class :main true))
 
 (defroutes app-routes
   (GET "/" [] (index))
@@ -24,3 +25,6 @@
 (defn run [options]
   (let [options (merge {:port 8080 :join? false} options)]
     (run-jetty (var app) options)))
+
+(defn -main [& args]
+  (run {}))
