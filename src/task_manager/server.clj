@@ -1,6 +1,5 @@
 (ns task-manager.server
-  (:use compojure.core
-        [ring.adapter.jetty :only (run-jetty)]
+  (:use [ring.adapter.jetty :only (run-jetty)]
         [task-manager.tasks :reload true])
   (:require [compojure.handler :as handler]
             [compojure.route :as route]
