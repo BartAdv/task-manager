@@ -12,19 +12,21 @@
       (include-js "js/app.js")
       body]]))
 
-(defn task-div [{n :task/number desc :task/description}]
+(defn task-div [{n :number desc :description}]
   [:div
    [:span n]
    [:span desc]])
 
 ;; without auxiliary libs for now
-(defn task-json [{n :task/number desc :task/description}]
+(defn task-json [{n :number desc :description}]
   (str "{\"number\":" n "," "\"description\":\"" desc "\"}"))
 
 (defn index [tasks]
-  (master {:title "Yeah" :html-attribs {:ng-app ""}}
-          [:div {:id "ctrl" :ng-controller "TasksCtrl"}
-           [:script (str
+  (do
+    (println tasks)
+    (master {:title "Yeah" :html-attribs {:ng-app ""}}
+            [:div {:id "ctrl" :ng-controller "TasksCtrl"}
+             [:script (str
                      "window.onload = function() {"
                      "var el=document.getElementById('ctrl');"
                      "var scope=angular.element(el).scope();"
@@ -35,4 +37,4 @@
                          [:span "{{task.number}}"]
                          [:span "{{task.description}}"]]]
            [:input {:type "text" :ng-model "newDesc"}]
-           [:button {:ng-click "createTask()"} "Create"]]))
+           [:button {:ng-click "createTask()"} "Create"]])))
