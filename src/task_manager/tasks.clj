@@ -26,7 +26,8 @@
   (let [id (:db/id (task number))]
     (update-task id 
                  :task/status (symbol "task.status" status)
-                 :task/description description)))
+                 :task/description description))
+  (get-tasks))
 
 (defn create [desc]
   (do

@@ -5,8 +5,8 @@ function TasksCtrl($scope, $http) {
         $scope.selectedTask = num;
     };
     $scope.isSelected = function(task) { return $scope.selectedTask === task.number; };
-    $scope.createTask = function() {
-        $http.put("/task/" + $scope.nweTask.description)
+    $scope.create = function() {
+        $http.put("/task/" + $scope.newTask.description)
         .success(function(data) {
             $scope.tasks = data;
         });

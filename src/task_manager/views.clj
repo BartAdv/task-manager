@@ -50,4 +50,4 @@
                           [:input {:type "text" :ng-model "task.status"}]
                           [:button {:ng-click "update(task)"} "Update"]]]]
            [:input {:type "text" :ng-model "newTask.description"}]
-           [:button {:ng-click "createTask()"} "Create"]])))
+           [:button {:ng-click "create()"} "Create"]])))
