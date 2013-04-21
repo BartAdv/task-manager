@@ -13,6 +13,10 @@
 (def seed-tx (read-string (slurp (clojure.java.io/resource "seed.dtm"))))
 (d/transact conn seed-tx)
 
+(defn task [num]
+  (let [[eid] (first (q '[:find ?e :in $ ?num :where [?e :task/number ?num]] (dbval) num))] 
+    (d/entity (dbval) eid)))
+
 (defn tasks []
   (->>
    (q '[:find ?e :where [?e :task/number]] (dbval))
@@ -21,8 +25,11 @@
             (d/touch ent))))
    (sort-by :task/number)))
 
-(defn task! [task]
-  (d/transact conn task))
-
-(defn create-task! [desc]
+(defn create-task [desc]
   (d/transact conn [[:create-task desc]]))
+
+(defn update-task [id & attribs]
+  (let [tx [(merge
+              {:db/id id} 
+              (apply hash-map attribs))]]
+    (d/transact conn tx)))

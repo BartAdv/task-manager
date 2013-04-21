@@ -1,21 +1,22 @@
 (ns task-manager.tasks
-  (:use [compojure.core])
-  (:require [task-manager.views :as views :reload true]
-            [task-manager.data :as data :reload true]))
+  (:use [compojure.core]
+        [task-manager.data :reload true])
+  (:require [task-manager.views :as views :reload true]))
 
-(defn with-json-keys [{n    :task/number 
-                       desc :task/description}]
-  (hash-map :number n :description desc))
+(defn task->json [{n      :task/number 
+                   desc   :task/description
+                   status :task/status}]
+  (hash-map :number n :description desc :status (last (re-find #"/(.+)" (str status)))))
 
 (defn index []
-  (views/index (map with-json-keys (data/tasks))))
+  (views/index (map task->json (tasks))))
 
-(defn save-task! [num desc]
-  (do
-    (data/task! num desc)
-    (views/index (map with-json-keys (data/tasks)))))
+(defn update-status [num status]
+  (let [id (:db/id (task num))]
+    (update-task id :task/status (symbol "task.status" status))
+    (map task->json (tasks))))
 
-(defn create-task! [desc]
+(defn create [desc]
   (do
-    (data/create-task! desc)
-    (map with-json-keys (data/tasks))))
+    (create-task desc)
+    (map task->json (tasks))))

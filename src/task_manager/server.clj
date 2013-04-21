@@ -1,18 +1,19 @@
 (ns task-manager.server
-  (:use [ring.adapter.jetty :only (run-jetty)]
-        [task-manager.tasks :reload true])
+  (:use compojure.core
+        [ring.adapter.jetty :only (run-jetty)]
+        [task-manager.tasks :as tasks :reload true])
   (:require [compojure.handler :as handler]
             [compojure.route :as route]
             [ring.middleware.json :refer (wrap-json-body wrap-json-response)])
   (:gen-class :main true))
 
 (defroutes app-routes
-  (GET "/" [] (index))
+  (GET "/" [] (tasks/index))
   (GET "/bututak" [] "Bu-tu-tak!!!")
-  (POST "/task" {{num :number desc :description} :body}
-        (save-task! num desc))
+  (POST ["/task/:number/status/:status", :id #"[0-9]+"] [number status]
+        (tasks/update-status (read-string number) status))
   (PUT "/task/:desc" [desc]
-       (create-task! desc))
+       (tasks/create desc))
   (route/resources "/")
   (route/not-found "Not Found"))
 

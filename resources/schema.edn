@@ -4,15 +4,15 @@
   :db/valueType :db.type/long
   :db/unique :db.unique/identity
   :db/cardinality :db.cardinality/one
-  :db/id #db/id [:db.part/db]
+  :db/id #db/id[:db.part/db]
   :db.install/_attribute :db.part/db}
  {:db/doc "Task description"
   :db/ident :task/description
   :db/valueType :db.type/string
   :db/cardinality :db.cardinality/one
-  :db/id #db/id [:db.part/db]
+  :db/id #db/id[:db.part/db]
   :db.install/_attribute :db.part/db}
- {:db/id #db/id [:db.part/user]
+ {:db/id #db/id[:db.part/user]
   :db/ident :create-task
   :db/fn #db/fn {:lang "clojure"
                  :params [db desc]
@@ -22,4 +22,21 @@
                          first
                          (map #(hash-map :db/id (d/tempid :db.part/user)
                                          :task/number (inc %)
-                                         :task/description desc)))}}]
+                                         :task/description desc
+					 :task/status :task.status/logged)))}}
+ {:db/doc "Task status"
+  :db/ident :task/status
+  :db/valueType :db.type/ref
+  :db/cardinality :db.cardinality/one
+  :db/id #db/id[:db.part/db]
+  :db.install/_attribute :db.part/db}
+
+;; statuses
+ {:db/ident :task.status/opened
+  :db/id #db/id[:db.part/user]}
+ {:db/ident :task.status/active
+  :db/id #db/id[:db.part/user]}
+ {:db/ident :task.status/cancelled
+  :db/id #db/id[:db.part/user]}
+ {:db/ident :task.status/closed
+  :db/id #db/id[:db.part/user]}]
