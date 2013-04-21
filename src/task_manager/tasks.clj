@@ -8,15 +8,20 @@
                    status :task/status}]
   (hash-map :number n :description desc :status (last (re-find #"/(.+)" (str status)))))
 
+(defn get-tasks [] 
+  (->>
+    (sort-by :task/number (tasks))
+    (map task->json)))
+
 (defn index []
-  (views/index (map task->json (tasks))))
+  (views/index (get-tasks)))
 
 (defn update-status [num status]
   (let [id (:db/id (task num))]
     (update-task id :task/status (symbol "task.status" status))
-    (map task->json (tasks))))
+    (get-tasks)))
 
 (defn create [desc]
   (do
     (create-task desc)
-    (map task->json (tasks))))
+    (get-tasks)))

@@ -15,15 +15,12 @@
 
 (defn task [num]
   (let [[eid] (first (q '[:find ?e :in $ ?num :where [?e :task/number ?num]] (dbval) num))] 
-    (d/entity (dbval) eid)))
+    (d/entity  (dbval) eid)))
 
 (defn tasks []
   (->>
    (q '[:find ?e :where [?e :task/number]] (dbval))
-   (map (fn [eid]
-          (let [ent (d/entity (dbval) (first eid))]
-            (d/touch ent))))
-   (sort-by :task/number)))
+   (map #(d/entity (dbval) (first %)))))
 
 (defn create-task [desc]
   (d/transact conn [[:create-task desc]]))
