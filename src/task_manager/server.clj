@@ -10,8 +10,10 @@
 (defroutes app-routes
   (GET "/" [] (tasks/index))
   (GET "/bututak" [] "Bu-tu-tak!!!")
-  (POST ["/task/:number/status/:status", :id #"[0-9]+"] [number status]
+  (POST ["/task/:number/status/:status", :number #"[0-9]+"] [number status]
         (tasks/update-status (read-string number) status))
+  (POST "/task" {task :body} 
+        (tasks/update task))
   (PUT "/task/:desc" [desc]
        (tasks/create desc))
   (route/resources "/")
