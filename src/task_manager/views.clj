@@ -10,6 +10,7 @@
      [:body
       (include-js "js/angular.js")
       (include-js "js/app.js")
+      (include-css "css/style.css")
       body]]))
 
 (defn task-div [{n :number desc :description}]
