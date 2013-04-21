@@ -23,7 +23,7 @@
                          (map #(hash-map :db/id (d/tempid :db.part/user)
                                          :task/number (inc %)
                                          :task/description desc
-					 :task/status :task.status/logged)))}}
+					 :task/status :task.status/opened)))}}
  {:db/doc "Task status"
   :db/ident :task/status
   :db/valueType :db.type/ref
