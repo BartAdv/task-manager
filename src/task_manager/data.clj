@@ -21,11 +21,8 @@
             (d/touch ent))))
    (sort-by :task/number)))
 
-(defn task! [num desc]
-  (let [tx [{:db/id #db/id [:db.part/user]
-             :task/description desc
-             :task/number num}]]
-    (d/transact conn tx)))
+(defn task! [task]
+  (d/transact conn task))
 
 (defn create-task! [desc]
   (d/transact conn [[:create-task desc]]))
