@@ -16,6 +16,8 @@
         (tasks/update task))
   (PUT "/task/:desc" [desc]
        (tasks/create desc))
+  (GET ["/task/:number", :number #"[0-9]+"] [number]
+       (tasks/details (read-string number)))
   (route/resources "/")
   (route/not-found "Not Found"))
 

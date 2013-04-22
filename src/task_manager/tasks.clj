@@ -16,6 +16,9 @@
 (defn index []
   (views/index (get-tasks)))
 
+(defn details [number]
+    (views/details (task->json (task number))))
+
 (defn update-status [num status]
   (let [id (:db/id (task num))]
     (update-task id :task/status (symbol "task.status" status))

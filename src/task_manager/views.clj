@@ -1,6 +1,6 @@
 (ns task-manager.views
   (:use [hiccup core page]
-        [clojure.string :only (join)]))
+        [clojure.string :only (join replace-first)]))
 
 (defn master [fields & body]
    (html
@@ -8,9 +8,9 @@
     [:html (:html-attribs fields)
      [:head (:title fields)]
      [:body
-      (include-js "js/angular.js")
-      (include-js "js/app.js")
-      (include-css "css/style.css")
+      (include-js "/js/angular.js")
+      (include-js "/js/app.js")
+      (include-css "/css/style.css")
       body]]))
 
 (defn task-div [{n :number desc :description}]
@@ -19,29 +19,21 @@
    [:span desc]])
 
 ;; without auxiliary libs for now
-;; this is only needed for initial fill, small experiment and
-;; that's why it does not use tasks/task->json
-(defn task->json [{n :number desc :description status :status}]
-  (format "{ \"number\": %d,
-             \"description\": \"%s\",
-             \"status\": \"%s\"
-          }"
-          n
-          desc
-          status))
+(defn stringify [m]
+  (str "{"
+        (join "," (map 
+                    (fn [[k v]] (str (str "\"" (replace-first (str k) ":" "") "\"") ": " (if (number? v) v (str "\"" v "\"")))) 
+                    (seq m)))
+       "}"))
 
 (defn index [tasks]
   (do
     (println tasks)
     (master {:title "Yeah" :html-attribs {:ng-app ""}}
             [:div {:id "ctrl" :ng-controller "TasksCtrl"}
-             [:script (str
-                     "window.onload = function() {"
-                     "var el=document.getElementById('ctrl');"
-                     "var scope=angular.element(el).scope();"
-                     "scope.$apply(function() { scope.tasks =["
-                     (join "," (map task->json tasks))
-                     "];});}")]
+             [:script (str "ApplyToElementScope(document.getElementById('ctrl'), function(scope) { scope.tasks = ["
+                            (join "," (map stringify tasks))
+                            "];});")]
            [:ul "Tasks" [:li {:ng-repeat "task in tasks" :ng-click "selectTask(task.number)"}
                         [:span "{{task.number}}"]
                         [:span "{{task.description}}"]
@@ -52,3 +44,14 @@
                           [:button {:ng-click "update(task)"} "Update"]]]]
            [:input {:type "text" :ng-model "newTask.description"}]
            [:button {:ng-click "create()"} "Create"]])))
+
+(defn details [task]
+  (println task)
+  (master {:title "Details" :html-attribs {:ng-app ""}}
+          [:div {:id "ctrl" :ng-controller "TaskDetailsCtrl"}
+           [:script (str "ApplyToElementScope(document.getElementById('ctrl'), function(scope) { scope.task ="
+                          (stringify task)
+                          ";});")]
+           [:span "{{task.number}}"]
+           [:span "{{task.description}}"]
+           [:span "{{task.status}}"]]))

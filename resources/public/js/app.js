@@ -1,3 +1,10 @@
+function ApplyToElementScope(el, f) {
+    window.onload = function() {
+	var scope = angular.element(el).scope();
+    	scope.$apply(function() { f(scope); });
+    };
+};
+
 function TasksCtrl($scope, $http) {
     $scope.selectedTask = 0;
     $scope.newTask = {};
@@ -24,4 +31,8 @@ function TasksCtrl($scope, $http) {
 	    $scope.selectedTask = 0;
 	});
     };
+}
+
+function TaskDetailsCtrl($scope, $http) {
+    $scope.task = {};
 }
