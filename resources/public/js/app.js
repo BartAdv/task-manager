@@ -21,6 +21,7 @@ function TasksCtrl($scope, $http) {
 	$http.post("/task" , task)
 	.success(function(data) {
 	    $scope.tasks = data;
+	    $scope.selectedTask = 0;
 	});
     };
 }
