@@ -11,7 +11,7 @@ function TasksCtrl($scope, $http) {
     $scope.selectTask = function(num) {
         $scope.selectedTask = num;
     };
-    $scope.isSelected = function(task) { return $scope.selectedTask === task.number; };
+    $scope.isSelected = function(task) { return $scope.selectedTask === task['task/number']; };
     $scope.create = function() {
         $http.put("/task/" + $scope.newTask.description)
         .success(function(data) {
@@ -19,7 +19,7 @@ function TasksCtrl($scope, $http) {
         });
     };
     $scope.updateStatus = function() {
-	$http.post("/task/" + $scope.task.number + "/status/" + $scope.task.status)
+	$http.post("/task/" + $scope.task.number + "/status/" + $scope.task['task/status'])
 	.success(function(data) {
 	    $scope.tasks = data;
 	});

@@ -30,3 +30,12 @@
               {:db/id id} 
               (apply hash-map attribs))]]
     (d/transact conn tx)))
+
+(defn create-comment [id text]
+  (let [tx [{:db/id (d/tempid :db.part/user) 
+             :comment/text text 
+             :_comments id }]]
+    (d/transact conn tx)))
+
+(defn remove-comment [cid]
+  (d/transact conn [[:db.fn/retractEntity cid]]))
