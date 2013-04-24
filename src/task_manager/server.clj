@@ -10,6 +10,7 @@
 (defroutes app-routes
   (GET "/" [] (tasks/index))
   (GET "/bututak" [] "Bu-tu-tak!!!")
+  (GET "/tasks" [] (tasks/all))
   (POST ["/task/:number/status/:status", :number #"[0-9]+"] [number status]
         (tasks/update-status (read-string number) status))
   (POST "/task" {task :body} 

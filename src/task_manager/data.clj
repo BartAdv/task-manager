@@ -15,7 +15,7 @@
 
 (defn task [num]
   (let [[eid] (first (q '[:find ?e :in $ ?num :where [?e :task/number ?num]] (dbval) num))] 
-    (d/entity  (dbval) eid)))
+    (d/entity (dbval) eid)))
 
 (defn tasks []
   (->>
@@ -39,3 +39,5 @@
 
 (defn remove-comment [cid]
   (d/transact conn [[:db.fn/retractEntity cid]]))
+
+

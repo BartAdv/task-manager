@@ -31,19 +31,16 @@
     (println tasks)
     (master {:title "Yeah" :html-attribs {:ng-app ""}}
             [:div {:id "ctrl" :ng-controller "TasksCtrl"}
-             [:script (str "ApplyToElementScope(document.getElementById('ctrl'), function(scope) { scope.tasks = ["
-                            (join "," (map stringify tasks))
-                            "];});")]
-           [:ul "Tasks" [:li {:ng-repeat "task in tasks" :ng-click "selectTask(task['task/number'])"}
-                        [:span "{{task['task/number']}}"]
-                        [:span "{{task['task/description']}}"]
-                        [:span "{{task['task/status']}}"]
-                        [:div {:ng-show "isSelected(task)"}
-                          [:input {:type "textarea" :ng-model "task['task/description']"}]
-                          [:input {:type "text" :ng-model "task['task/status']"}]
-                          [:button {:ng-click "update(task)"} "Update"]]]]
-           [:input {:type "text" :ng-model "newTask.description"}]
-           [:button {:ng-click "create()"} "Create"]])))
+            [:ul "Tasks" [:li {:ng-repeat "task in tasks" :ng-click "selectTask(task.number)"}
+                         [:span "{{task.number}}"]
+                         [:span "{{task.description}}"]
+                         [:span "{{task.status}}"]
+                         [:div {:ng-show "isSelected(task)"}
+                           [:input {:type "textarea" :ng-model "task.description"}]
+                           [:input {:type "text" :ng-model "task.status"}]
+                           [:button {:ng-click "update(task)"} "Update"]]]] 
+            [:input {:type "text" :ng-model "newTask.description"}] 
+            [:button {:ng-click "create()"} "Create"]])))
 
 (defn details [task]
   (println task)
@@ -52,6 +49,6 @@
            [:script (str "ApplyToElementScope(document.getElementById('ctrl'), function(scope) { scope.task ="
                           (stringify task)
                           ";});")]
-           [:span "{{task['task/number']}}"]
-           [:span "{{task['description']}}"]
-           [:span "{{task['status']}}"]]))
+           [:span "{{task.number}}"]
+           [:span "{{task.description}}"]
+           [:span "{{task.status}}"]]))
