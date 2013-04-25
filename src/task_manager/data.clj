@@ -13,6 +13,9 @@
 (def seed-tx (read-string (slurp (clojure.java.io/resource "seed.dtm"))))
 (d/transact conn seed-tx)
 
+(defn save [& transactions]
+  (d/transact conn transactions))
+
 (defn task [num]
   (let [[eid] (first (q '[:find ?e :in $ ?num :where [?e :task/number ?num]] (dbval) num))] 
     (d/entity (dbval) eid)))
@@ -22,22 +25,19 @@
    (q '[:find ?e :where [?e :task/number]] (dbval))
    (map #(d/entity (dbval) (first %)))))
 
-(defn create-task [desc]
-  (d/transact conn [[:create-task desc]]))
+(defn create-task [desc] 
+  [:create-task desc])
 
-(defn update-task [number & attribs]
-  (let [tx [(merge
-              {:db/id #db/id[:db.part/user] :task/number number} 
-              (apply hash-map attribs))]]
-    (d/transact conn tx)))
+(defn update-task [number & attribs] 
+  (merge {:db/id #db/id[:db.part/user] :task/number number} 
+          (apply hash-map attribs))) 
 
 (defn create-comment [id text]
-  (let [tx [{:db/id (d/tempid :db.part/user) 
+  [{:db/id (d/tempid :db.part/user) 
              :comment/text text 
-             :_comments id }]]
-    (d/transact conn tx)))
+             :_comments id }])
 
 (defn remove-comment [cid]
-  (d/transact conn [[:db.fn/retractEntity cid]]))
+  [:db.fn/retractEntity cid])
 
 

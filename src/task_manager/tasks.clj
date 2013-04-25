@@ -53,17 +53,17 @@
     (views/details (task number)))
 
 (defn update-status [num status]
-    (update-task num :task/status (symbol "task.status" status))
+    (save (update-task num :task/status (symbol "task.status" status)))
     (get-tasks))
 
 ;; let's be picky about what we update (we could as well use client-> mapping)
 (defn update [{number :number status :status description :description}]
-    (update-task number 
+  (save (update-task number 
                  :task/status (symbol "task.status" status) 
-                 :task/description description) 
+                 :task/description description)) 
   (get-tasks))
 
 (defn create [desc]
   (do
-    (create-task desc)
+    (save (create-task desc))
     (get-tasks)))
