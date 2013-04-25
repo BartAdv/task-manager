@@ -25,9 +25,9 @@
 (defn create-task [desc]
   (d/transact conn [[:create-task desc]]))
 
-(defn update-task [id & attribs]
+(defn update-task [number & attribs]
   (let [tx [(merge
-              {:db/id id} 
+              {:db/id #db/id[:db.part/user] :task/number number} 
               (apply hash-map attribs))]]
     (d/transact conn tx)))
 
