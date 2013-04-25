@@ -52,9 +52,6 @@
 (defn task [number]
   {:body (task->client (get-task number))})
 
-(defn details [number]
-    (views/details (get-task number)))
-
 (defn update-status [num status]
     (save (update-task num :task/status (symbol "task.status" status)))
     (get-tasks))
