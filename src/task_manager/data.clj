@@ -16,8 +16,8 @@
 (defn save [& transactions]
   (d/transact conn transactions))
 
-(defn task [num]
-  (let [[eid] (first (q '[:find ?e :in $ ?num :where [?e :task/number ?num]] (dbval) num))] 
+(defn get-task [num]
+  (let [[eid] (first (q '[:find ?e :in $ ?num :where [?e :task/number ?num]] (dbval) num))]
     (d/entity (dbval) eid)))
 
 (defn tasks []
@@ -25,19 +25,17 @@
    (q '[:find ?e :where [?e :task/number]] (dbval))
    (map #(d/entity (dbval) (first %)))))
 
-(defn create-task [desc] 
+(defn create-task [desc]
   [:create-task desc])
 
-(defn update-task [number & attribs] 
-  (merge {:db/id #db/id[:db.part/user] :task/number number} 
-          (apply hash-map attribs))) 
+(defn update-task [number & attribs]
+  (merge {:db/id #db/id[:db.part/user] :task/number number}
+          (apply hash-map attribs)))
 
 (defn create-comment [id text]
-  [{:db/id (d/tempid :db.part/user) 
-             :comment/text text 
+  [{:db/id (d/tempid :db.part/user)
+             :comment/text text
              :_comments id }])
 
 (defn remove-comment [cid]
   [:db.fn/retractEntity cid])
-
-

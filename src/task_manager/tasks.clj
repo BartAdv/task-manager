@@ -11,7 +11,7 @@
              (cond
                (nil? to) [nil nil] ;; will be filtered out later
                (nil? mapping) [to v] ;; just remap key
-               (fn? mapping) [to (mapping v)])) ;; use mapping function 
+               (fn? mapping) [to (mapping v)])) ;; use mapping function
            ))
     (filter #(not= [nil nil] %))
     (into {})))
@@ -22,8 +22,8 @@
 (defn task->client [t]
   (smap t {:db/id [:id]
            :task/number [:number]
-           :task/description [:description] 
-           :task/status [:status #(last (re-find #"/(.+)" (str %)))] 
+           :task/description [:description]
+           :task/status [:status #(last (re-find #"/(.+)" (str %)))]
            :comments [:comments #(map comment->client %)]
            :comment/text [:text]}))
 
@@ -33,12 +33,12 @@
 (defn client->task [t]
   (smap t {:id [:db/id]
            :number [:task/number]
-           :description [:task/description] 
-           :status [:task/status #(symbol "task.status" %)] 
+           :description [:task/description]
+           :status [:task/status #(symbol "task.status" %)]
            :comments [:comments #(map client->comment %)]}))
 
-(defn get-tasks [] 
-  (->> 
+(defn get-tasks []
+  (->>
     (tasks)
     (sort-by :task/number)
     (map task->client)))
@@ -49,8 +49,11 @@
 (defn all []
   (get-tasks))
 
+(defn task [number]
+  {:body (task->client (get-task number))})
+
 (defn details [number]
-    (views/details (task number)))
+    (views/details (get-task number)))
 
 (defn update-status [num status]
     (save (update-task num :task/status (symbol "task.status" status)))
@@ -58,9 +61,9 @@
 
 ;; let's be picky about what we update (we could as well use client-> mapping)
 (defn update [{number :number status :status description :description}]
-  (save (update-task number 
-                 :task/status (symbol "task.status" status) 
-                 :task/description description)) 
+  (save (update-task number
+                 :task/status (symbol "task.status" status)
+                 :task/description description))
   (get-tasks))
 
 (defn create [desc]

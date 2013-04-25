@@ -8,17 +8,19 @@
   (:gen-class :main true))
 
 (defroutes app-routes
+  ;; HTML
   (GET "/" [] (tasks/index))
   (GET "/bututak" [] "Bu-tu-tak!!!")
+  ;; API
   (GET "/tasks" [] (tasks/all))
   (POST ["/task/:number/status/:status", :number #"[0-9]+"] [number status]
         (tasks/update-status (read-string number) status))
-  (POST "/task" {task :body} 
+  (POST "/task" {task :body}
         (tasks/update task))
   (PUT "/task/:desc" [desc]
        (tasks/create desc))
   (GET ["/task/:number", :number #"[0-9]+"] [number]
-       (tasks/details (read-string number)))
+       (tasks/task (read-string number)))
   (route/resources "/")
   (route/not-found "Not Found"))
 

@@ -1,0 +1,17 @@
+<p>Why hello there!</p>
+
+<ul>
+  <li ng-repeat="task in tasks" ng-click="selectTask(task.number)">
+    <span>{{task.number}}</span>
+    <span>{{task.number}}</span>
+    <span>{{task.description}}</span>
+    <span>{{task.status}}</span>
+    <div ng-show="isSelected(task)">
+      <input type="textarea" ng-model="task.description"/>
+      <input type="text" ng-model="task.status"/>
+      <button ng-click="update(task)">Update</button>
+    </div>
+  </li>
+  <input type="text" ng-model="newTask.description" />
+  <button ng-click="create()">Create</button>
+</ul>
