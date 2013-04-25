@@ -28,6 +28,14 @@ function TasksCtrl($scope, $http) {
     };
 }
 
-function TaskDetailsCtrl($scope, $routeParams, Task) {
-	$scope.task = Task.get({number: $routeParams.number});
+function TaskDetailsCtrl($scope, $http, $routeParams, Task) {
+    $scope.task = Task.get({number: $routeParams.number});
+    $scope.comment = "";
+
+    $scope.addComment = function() {
+        $http.put("/task/"+$scope.task.number+"/comments/"+$scope.comment)
+        .success(function(data) {
+            $scope.task.comments = data;
+        });
+    };
 }

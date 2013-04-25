@@ -4,3 +4,12 @@
 <span>{{task.number}}</span>
 <span>{{task.description}}</span>
 <span>{{task.status}}</span>
+
+<ul>
+  <li ng-repeat="comment in task.comments">
+    <span>{{comment.text}}</span>
+  </li>
+</li>
+
+<input type="textarea" ng-model="comment"/>
+<button ng-click="addComment()">Add comment</button>

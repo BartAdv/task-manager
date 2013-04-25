@@ -5,7 +5,6 @@
 (def uri "datomic:mem://tasks")
 (d/create-database uri)
 (def conn (d/connect uri))
-(defn dbval [] (db conn))
 
 (def schema-tx (read-string (slurp (clojure.java.io/resource "schema.edn"))))
 (d/transact conn schema-tx)
@@ -13,17 +12,19 @@
 (def seed-tx (read-string (slurp (clojure.java.io/resource "seed.dtm"))))
 (d/transact conn seed-tx)
 
+(defn get-db [] (db conn))
+
 (defn save [& transactions]
-  (d/transact conn transactions))
+  (get @(d/transact conn transactions) :db-after))
 
-(defn get-task [num]
-  (let [[eid] (first (q '[:find ?e :in $ ?num :where [?e :task/number ?num]] (dbval) num))]
-    (d/entity (dbval) eid)))
+(defn get-task [dbval num]
+  (let [[eid] (first (q '[:find ?e :in $ ?num :where [?e :task/number ?num]] dbval num))]
+    (d/entity dbval eid)))
 
-(defn tasks []
+(defn tasks [dbval]
   (->>
-   (q '[:find ?e :where [?e :task/number]] (dbval))
-   (map #(d/entity (dbval) (first %)))))
+   (q '[:find ?e :where [?e :task/number]] dbval)
+   (map #(d/entity dbval (first %)))))
 
 (defn create-task [desc]
   [:create-task desc])
@@ -33,9 +34,9 @@
           (apply hash-map attribs)))
 
 (defn create-comment [id text]
-  [{:db/id (d/tempid :db.part/user)
-             :comment/text text
-             :_comments id }])
+  {:db/id (d/tempid :db.part/user)
+     :comment/text text
+     :_comments id })
 
 (defn remove-comment [cid]
   [:db.fn/retractEntity cid])

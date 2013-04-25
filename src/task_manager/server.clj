@@ -21,6 +21,8 @@
        (tasks/create desc))
   (GET ["/task/:number", :number #"[0-9]+"] [number]
        (tasks/task (read-string number)))
+  (PUT ["/task/:number/comments/:text", :number #"[0-9]+"] [number text]
+       (tasks/add-comment (read-string number) text))
   (route/resources "/")
   (route/not-found "Not Found"))
 
