@@ -13,16 +13,18 @@
   (GET "/bututak" [] "Bu-tu-tak!!!")
   ;; API
   (GET "/tasks" [] (tasks/all))
-  (POST ["/task/:number/status/:status", :number #"[0-9]+"] [number status]
-        (tasks/update-status (read-string number) status))
+  (context ["/task/:number", :number #"[0-9]+"] [number]
+           (let-routes [number (read-string number)]
+                       (GET "/" []
+                            (tasks/task number))
+                       (PUT "/comments/:text" [text]
+                            (tasks/add-comment number text))
+                       (POST "/status/:status" [status]
+                             (tasks/update-status number status))))
   (POST "/task" {task :body}
         (tasks/update task))
   (PUT "/task/:desc" [desc]
        (tasks/create desc))
-  (GET ["/task/:number", :number #"[0-9]+"] [number]
-       (tasks/task (read-string number)))
-  (PUT ["/task/:number/comments/:text", :number #"[0-9]+"] [number text]
-       (tasks/add-comment (read-string number) text))
   (route/resources "/")
   (route/not-found "Not Found"))
 
