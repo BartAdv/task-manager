@@ -40,3 +40,18 @@
 
 (defn remove-comment [cid]
   [:db.fn/retractEntity cid])
+
+;; mapping
+
+(defn entity->map [source selection]
+  (->>
+    source
+    (map (fn [[from v]]
+           (let [[to mapping] (from selection)]
+             (cond
+               (nil? to) [nil nil] ;; will be filtered out later
+               (nil? mapping) [to v] ;; just remap key
+               (fn? mapping) [to (mapping v)])) ;; use mapping function
+           ))
+    (filter #(not= [nil nil] %))
+    (into {})))

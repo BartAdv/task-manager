@@ -3,24 +3,11 @@
         [task-manager.data :reload true])
   (:require [task-manager.views :as views :reload true]))
 
-(defn smap [source selection]
-  (->>
-    source
-    (map (fn [[from v]]
-           (let [[to mapping] (from selection)]
-             (cond
-               (nil? to) [nil nil] ;; will be filtered out later
-               (nil? mapping) [to v] ;; just remap key
-               (fn? mapping) [to (mapping v)])) ;; use mapping function
-           ))
-    (filter #(not= [nil nil] %))
-    (into {})))
-
 (defn comment->client [c]
-  (smap c {:comment/text [:text]}))
+  (entity->map c {:comment/text [:text]}))
 
 (defn task->client [t]
-  (smap t {:db/id [:id]
+  (entity->map t {:db/id [:id]
            :task/number [:number]
            :task/description [:description]
            :task/status [:status #(last (re-find #"/(.+)" (str %)))]
@@ -28,10 +15,10 @@
            :comment/text [:text]}))
 
 (defn client->comment [c]
-  (smap c {:text [:comment/text]}))
+  (entity->map c {:text [:comment/text]}))
 
 (defn client->task [t]
-  (smap t {:id [:db/id]
+  (entity->map t {:id [:db/id]
            :number [:task/number]
            :description [:task/description]
            :status [:task/status #(symbol "task.status" %)]
