@@ -1,4 +1,5 @@
 (ns task-manager.data
+  (:refer-clojure :exclude [load])
   (:use [datomic.api :only [q db] :as d])
   (:require clojure.java.io))
 
@@ -12,7 +13,7 @@
 (def seed-tx (read-string (slurp (clojure.java.io/resource "seed.dtm"))))
 (d/transact conn seed-tx)
 
-(defn get-db [] (db conn))
+(defn load [] (db conn))
 
 (defn save [& transactions]
   (get @(d/transact conn transactions) :db-after))
