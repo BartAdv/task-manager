@@ -1,5 +1,4 @@
 (ns task-manager.tasks
-  (:refer-clojure :exclude [load])
   (:use [compojure.core]
         [task-manager.data :reload true])
   (:require [task-manager.views :as views :reload true]))
@@ -32,13 +31,13 @@
    (map task->client)))
 
 (defn index []
-  (views/index (get-tasks (load))))
+  (views/index (get-tasks (load-db))))
 
 (defn all []
-  (get-tasks (load)))
+  (get-tasks (load-db)))
 
 (defn task [number]
-  {:body (task->client (get-task (load) number))})
+  {:body (task->client (get-task (load-db) number))})
 
 (defn update-status [num status]
   (->
@@ -47,18 +46,17 @@
 
 ;; let's be picky about what we update (we could as well use client-> mapping)
 (defn update [{number :number status :status description :description}]
-  (->
-   (save (update-task number
-                      :task/status (symbol "task.status" status)
-                      :task/description description))
-   (get-tasks)))
+  (let [task (update-task number
+                     :task/status (symbol "task.status" status)
+                     :task/description description)]
+   {:status 200}))
 
 (defn create [desc]
-  (->
-    (save (create-task desc))
-    (get-tasks)))
+  (let [task (create-task desc)]
+    {:status 201 :body (task->client task)}))
+
 
 (defn add-comment [number text]
-  (let [task (get-task (load) number)
-        db (save (create-comment (:db/id task) text))]
-    (map comment->client (:comments (get-task db number)))))
+  (let [tid (:db/id (get-task (load-db) number))]
+    (create-comment tid text)
+    {:status 200}))

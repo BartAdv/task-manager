@@ -8,9 +8,9 @@ function TasksCtrl($scope, $http) {
     };
     $scope.isSelected = function(task) { return $scope.selectedTask === task.number; };
     $scope.create = function() {
-        $http.put("/task/" + $scope.newTask.description)
+        $http.post("/task/" + $scope.newTask.description)
         .success(function(data) {
-            $scope.tasks = data;
+            $scope.tasks.push(data);
         });
     };
     $scope.updateStatus = function() {
@@ -20,22 +20,21 @@ function TasksCtrl($scope, $http) {
 	});
     };
     $scope.update = function(task) {
-	$http.post("/task" , task)
+	$http.post("/task", task)
 	.success(function(data) {
-	    $scope.tasks = data;
 	    $scope.selectedTask = 0;
 	});
     };
 }
 
-function TaskDetailsCtrl($scope, $http, $routeParams, Task) {
+function TaskDetailsCtrl($scope, $http, $routeParams, Task, Comment) {
     $scope.task = Task.get({number: $routeParams.number});
     $scope.comment = "";
 
     $scope.addComment = function() {
-        $http.put("/task/"+$scope.task.number+"/comments/"+$scope.comment)
-        .success(function(data) {
-            $scope.task.comments = data;
+        var comment = new Comment({number: $routeParams.number, text: $scope.comment});
+        comment.$save(function(d) {
+            $scope.task.comments.push(d);
         });
     };
 }

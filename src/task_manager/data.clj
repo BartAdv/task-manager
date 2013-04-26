@@ -1,5 +1,4 @@
 (ns task-manager.data
-  (:refer-clojure :exclude [load])
   (:use [datomic.api :only [q db] :as d])
   (:require clojure.java.io))
 
@@ -13,10 +12,15 @@
 (def seed-tx (read-string (slurp (clojure.java.io/resource "seed.dtm"))))
 (d/transact conn seed-tx)
 
-(defn load [] (db conn))
+(defn load-db
+  ([] (db conn))
+  ([future] (get :db-after future)))
 
 (defn save [& transactions]
-  (get @(d/transact conn transactions) :db-after))
+  (d/transact conn transactions))
+
+(defn get-entity [dbval id]
+  (d/entity dbval id))
 
 (defn get-task [dbval num]
   (let [[eid] (first (q '[:find ?e :in $ ?num :where [?e :task/number ?num]] dbval num))]
@@ -28,16 +32,31 @@
    (map #(d/entity dbval (first %)))))
 
 (defn create-task [desc]
-  [:create-task desc])
+  (let [tempid (d/tempid :db.part/user)
+        tx [[:create-task desc tempid]]
+        res @(d/transact conn tx)
+        db (:db-after res)
+        id (d/resolve-tempid db (:tempids res) tempid)]
+    (d/entity db id)))
 
 (defn update-task [number & attribs]
-  (merge {:db/id #db/id[:db.part/user] :task/number number}
-          (apply hash-map attribs)))
+  (let [tempid (d/tempid :db.part/user)
+        tx [(merge {:db/id tempid :task/number number}
+                   (apply hash-map attribs))]
+        res @(d/transact conn tx)
+        db (:db-after res)
+        id (d/resolve-tempid db (:tempids res) tempid)]
+    (d/entity db id)))
 
-(defn create-comment [id text]
-  {:db/id (d/tempid :db.part/user)
-     :comment/text text
-     :_comments id })
+(defn create-comment [tid text]
+  (let [tempid (d/tempid :db.part/user)
+        tx [{:db/id tempid
+             :comment/text text
+             :_comments tid}]
+        res @(d/transact conn tx)
+        db (:db-after res)
+        cid (d/resolve-tempid db (:tempids res) tempid)]
+    [cid db]))
 
 (defn remove-comment [cid]
   [:db.fn/retractEntity cid])

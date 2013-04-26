@@ -15,12 +15,12 @@
  {:db/id #db/id[:db.part/user]
   :db/ident :create-task
   :db/fn #db/fn {:lang "clojure"
-                 :params [db desc]
+                 :params [db desc tempid]
                  :code (->>
                          (d/q '[:find (max ?n)
                                 :where [_ :task/number ?n]] db)
                          first
-                         (map #(hash-map :db/id (d/tempid :db.part/user)
+                         (map #(hash-map :db/id tempid
                                          :task/number (inc %)
                                          :task/description desc
 					 :task/status :task.status/opened)))}}

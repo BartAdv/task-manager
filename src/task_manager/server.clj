@@ -17,13 +17,13 @@
            (let-routes [number (read-string number)]
                        (GET "/" []
                             (tasks/task number))
-                       (PUT "/comments/:text" [text]
+                       (POST "/comments/:text" [text]
                             (tasks/add-comment number text))
                        (POST "/status/:status" [status]
                              (tasks/update-status number status))))
   (POST "/task" {task :body}
         (tasks/update task))
-  (PUT "/task/:desc" [desc]
+  (POST "/task/:desc" [desc]
        (tasks/create desc))
   (route/resources "/")
   (route/not-found "Not Found"))
